@@ -7,7 +7,7 @@
 
 ## 完了済み
 
-| 内容 | ファイル |
+| 内容 | ファイル / 備考 |
 |---|---|
 | microCMS接続設定 | `src/lib/microcms.ts` |
 | トップページ（記事一覧） | `src/pages/index.astro` |
@@ -18,6 +18,10 @@
 | Noto Sans JP フォント設定 | Google Fonts via `<link>` in BaseLayout |
 | Tailwind Typography | `@tailwindcss/typography`（`tailwind.config.cjs`） |
 | デザイン全体（ヘッダー・フッター・カード・prose） | 完了 |
+| OGP / Twitter Card | `BaseLayout.astro`、`[slug].astro` に実装済み |
+| GitHub リポジトリ | `beecam-wq/be-blog`（HTTPS認証） |
+| Vercel デプロイ | `https://be-blog-iota.vercel.app` |
+| microCMS Webhook | 記事公開・更新時にVercel自動リビルド |
 
 ## 技術的な注意点
 
@@ -29,6 +33,7 @@
 - `publishedAt` / `updatedAt` はmicroCMSが自動生成（手動フィールド不要）
 - Tailwindのconfigは `tailwind.config.cjs`（package.jsonが `"type": "module"` のため `.mjs` だとjiti非対応でクラッシュする）
 - 開発サーバー起動: `npm run dev` → `http://localhost:4321/`
+- GitHubへのpushは `git push`（HTTPS + Personal Access Token、macOSのkeychainに保存済み）
 
 ## デザイン仕様
 
@@ -41,6 +46,5 @@
 
 ## 次にやること
 
-- 記事を追加して実際の見た目を確認する
-- OGP / meta設定（SNSシェア対応）
-- Vercel / Netlifyにデプロイ
+- microCMSで記事を追加して実際の見た目を確認する
+- （必要であれば）カスタムドメインをVercelに設定する
