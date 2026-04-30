@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { client } from '../../lib/microcms';
+import type { Post } from '../../lib/microcms';
+
+export async function getStaticPaths() {
+  const { contents: posts } = await client.getList<Post>({
+    endpoint: 'posts',
+    queries: { limit: 100, fields: 'slug' },
+  });
+  return posts.map((post) => ({ params: { slug: post.slug } }));
+}
+
+const { slug } = Astro.params;
+const { contents } = await client.getList<Post>({
+  endpoint: 'posts',
+  queries: { filters: `slug[equals]${slug}` },
+});
+const post = contents[0];
+const category = Array.isArray(post.category) ? post.category[0] : post.category;
+const ogImage = post.coverImage?.url;
+---
+
+<BaseLayout title={post.title} description={post.description} ogImage={ogImage} ogType="article">
+  <nav class="mb-10">
+    <a href="/" class="text-xs text-[#bbb] hover:text-[#1c1c1c] transition-colors">← 一覧へ</a>
+  </nav>
+
+  <article>
+    <header class="mb-10">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="text-xs text-[#bbb]">{post.publishedAt.slice(0, 10)}</span>
+        <a
+          href={`/${category}`}
+          class="text-xs text-[#999] border border-[#e0ddd8] rounded px-1.5 py-0.5 hover:opacity-60 transition-opacity"
+        >
+          {category}
+        </a>
+      </div>
+      <h1 class="text-xl font-bold leading-relaxed">{post.title}</h1>
+
+      {post.postType === 'review' && (
+        <dl class="mt-5 text-sm text-[#999] space-y-1.5">
+          {post.reviewScore && (
+            <div class="flex gap-3">
+              <dt class="text-[#bbb]">評価</dt>
+              <dd>{'★'.repeat(post.reviewScore)}{'☆'.repeat(5 - post.reviewScore)}</dd>
+            </div>
+          )}
+          {post.director && (
+            <div class="flex gap-3"><dt class="text-[#bbb]">監督</dt><dd>{post.director}</dd></div>
+          )}
+          {post.originalTitle && (
+            <div class="flex gap-3"><dt class="text-[#bbb]">原題</dt><dd><em>{post.originalTitle}</em></dd></div>
+          )}
+          {post.platform && (
+            <div class="flex gap-3"><dt class="text-[#bbb]">配信</dt><dd>{post.platform}</dd></div>
+          )}
+          {post.releaseYear && (
+            <div class="flex gap-3"><dt class="text-[#bbb]">公開年</dt><dd>{post.releaseYear}</dd></div>
+          )}
+          {post.author && (
+            <div class="flex gap-3"><dt class="text-[#bbb]">著者</dt><dd>{post.author}</dd></div>
+          )}
+        </dl>
+      )}
+    </header>
+
+    {post.coverImage && (
+      <img
+        src={post.coverImage.url}
+        alt={post.title}
+        class="w-full mb-10 rounded-sm"
+      />
+    )}
+
+    <div class="prose prose-neutral max-w-none" set:html={post.body} />
+  </article>
+</BaseLayout>

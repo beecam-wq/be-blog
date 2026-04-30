@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { client } from '../lib/microcms';
+import type { Post } from '../lib/microcms';
+
+type Category = 'design' | 'photo' | 'book' | 'film' | 'note';
+
+export async function getStaticPaths() {
+  const categories: Category[] = ['design', 'photo', 'book', 'film', 'note'];
+  return categories.map((category) => ({ params: { category } }));
+}
+
+const { category } = Astro.params as { category: Category };
+
+const { contents: allPosts } = await client.getList<Post>({
+  endpoint: 'posts',
+  queries: { orders: '-publishedAt', limit: 100 },
+});
+const posts = allPosts.filter((post) => {
+  const cat = Array.isArray(post.category) ? post.category[0] : post.category;
+  return cat === category;
+});
+---
+
+<BaseLayout title={category}>
+  <nav class="mb-10">
+    <a href="/" class="text-xs text-[#bbb] hover:text-[#1c1c1c] transition-colors">← 一覧へ</a>
+  </nav>
+
+  <h1 class="text-xs font-medium text-[#999] mb-8 tracking-widest uppercase">{category}</h1>
+
+  {posts.length === 0 ? (
+    <p class="text-sm text-[#bbb]">まだ記事がありません。</p>
+  ) : (
+    <ul class="divide-y divide-[#e8e6e1]">
+      {posts.map((post) => (
+        <li>
+          <a href={`/posts/${post.slug}`} class="block py-8 group">
+            <p class="text-xs text-[#bbb] mb-2">{post.publishedAt.slice(0, 10)}</p>
+            <h2 class="text-base font-medium leading-relaxed group-hover:opacity-50 transition-opacity">
+              {post.title}
+            </h2>
+            {post.description && (
+              <p class="mt-1.5 text-sm text-[#999] leading-relaxed">{post.description}</p>
+            )}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )}
+</BaseLayout>
