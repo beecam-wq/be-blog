@@ -13,7 +13,12 @@
       "Bash(git -C /Users/beecam/Desktop/prj_be-blog diff --stat)",
       "Bash(git -C /Users/beecam/Desktop/prj_be-blog status)",
       "Bash(git -C /Users/beecam/Desktop/prj_be-blog add .gitignore .claude/settings.json)",
-      "Bash(git -C /Users/beecam/Desktop/prj_be-blog commit -m ' *)"
+      "Bash(git -C /Users/beecam/Desktop/prj_be-blog commit -m ' *)",
+      "Bash(npm install *)",
+      "Bash(git -C /Users/beecam/Desktop/prj_be-blog diff)"
+    ],
+    "additionalDirectories": [
+      "/Users/beecam/Desktop/prj_be-blog/content/drafts"
     ]
   }
 }
