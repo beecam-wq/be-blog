@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { client, parseTags } from '../../lib/microcms';
+import type { Post } from '../../lib/microcms';
+
+export async function getStaticPaths() {
+  const { contents: posts } = await client.getList<Post>({
+    endpoint: 'posts',
+    queries: { orders: '-publishedAt', limit: 100 },
+  });
+
+  const tagSet = new Set<string>();
+  posts.forEach((post) => parseTags(post.tags).forEach((t) => tagSet.add(t)));
+
+  return Array.from(tagSet).map((tag) => ({
+    params: { tag },
+    props: {
+      posts: posts.filter((post) => parseTags(post.tags).includes(tag)),
+    },
+  }));
+}
+
+const { tag } = Astro.params;
+const { posts } = Astro.props as { posts: Post[] };
+---
+
+<BaseLayout title={`#${tag}`}>
+  <nav class="mb-10">
+    <a href="/" class="text-xs text-[#bbb] hover:text-[#1c1c1c] transition-colors">← 一覧へ</a>
+  </nav>
+
+  <h1 class="text-xs font-medium text-[#999] mb-8 tracking-widest"># {tag}</h1>
+
+  <ul class="divide-y divide-[#e8e6e1]">
+    {posts.map((post) => {
+      const category = Array.isArray(post.category) ? post.category[0] : post.category;
+      return (
+        <li>
+          <a href={`/posts/${post.slug}`} class="block py-8 group">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-xs text-[#bbb]">{post.publishedAt.slice(0, 10)}</span>
+              <span class="text-xs text-[#999] border border-[#e0ddd8] rounded px-1.5 py-0.5">{category}</span>
+            </div>
+            <h2 class="text-base font-medium leading-relaxed group-hover:opacity-50 transition-opacity">
+              {post.title}
+            </h2>
+            {post.description && (
+              <p class="mt-1.5 text-sm text-[#999] leading-relaxed">{post.description}</p>
+            )}
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+</BaseLayout>

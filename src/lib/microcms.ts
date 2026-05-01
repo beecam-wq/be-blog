@@ -5,6 +5,12 @@ export const client = createClient({
   apiKey: import.meta.env.MICROCMS_API_KEY,
 });
 
+export function parseTags(tags?: string[] | string): string[] {
+  if (!tags) return [];
+  const arr = Array.isArray(tags) ? tags : [tags];
+  return arr.flatMap((t) => t.split(/\s+/)).filter(Boolean);
+}
+
 export type Post = {
   id: string;
   title: string;
@@ -14,7 +20,7 @@ export type Post = {
   body: string;
   description?: string;
   coverImage?: { url: string };
-  tags?: string[];
+  tags?: string[] | string;
   draft?: boolean;
   reviewScore?: number;
   director?: string;

@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { client } from '../../lib/microcms';
+import { client, parseTags } from '../../lib/microcms';
 import type { Post } from '../../lib/microcms';
 
 export async function getStaticPaths() {
@@ -75,5 +75,18 @@ const ogImage = post.coverImage?.url;
     )}
 
     <div class="prose prose-neutral max-w-none" set:html={post.body} />
+
+    {parseTags(post.tags).length > 0 && (
+      <footer class="mt-12 pt-8 border-t border-[#e8e6e1] flex flex-wrap gap-2">
+        {parseTags(post.tags).map((tag) => (
+          <a
+            href={`/tags/${tag}`}
+            class="text-xs text-[#999] border border-[#e0ddd8] rounded px-2 py-1 hover:opacity-60 transition-opacity"
+          >
+            # {tag}
+          </a>
+        ))}
+      </footer>
+    )}
   </article>
 </BaseLayout>
