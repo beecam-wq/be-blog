@@ -5,7 +5,15 @@
       "mcp__claude_ai_Google_Drive__read_file_content",
       "Bash(npm run *)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4321/)",
-      "mcp__plugin_playwright_playwright__browser_navigate"
+      "mcp__plugin_playwright_playwright__browser_navigate",
+      "Bash(git rm *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(git -C /Users/beecam/Desktop/prj_be-blog diff --stat)",
+      "Bash(git -C /Users/beecam/Desktop/prj_be-blog status)",
+      "Bash(git -C /Users/beecam/Desktop/prj_be-blog add .gitignore .claude/settings.json)",
+      "Bash(git -C /Users/beecam/Desktop/prj_be-blog commit -m ' *)"
     ]
   }
 }
