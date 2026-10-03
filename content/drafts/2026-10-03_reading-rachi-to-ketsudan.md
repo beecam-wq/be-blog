@@ -1,8 +1,8 @@
 ---
 title: "久しぶりの更新"
 date: "2026-10-03"
-category: "note"
-tags: ["読書", "蓮池薫"]
+category: "book"
+tags: ["読書", "蓮池薫", "拉致と決断"]
 draft: true
 description: "土曜日の一人時間。図書館で借りた「拉致と決断」を読みながら、彼にしか書けない言葉に向き合う。"
 ---
