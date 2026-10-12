@@ -2,7 +2,7 @@
 
 ## 目的
 `content/drafts/` の記事を `content/posts/` に移動し、公開前の最終チェックを行う。
-本番サイトの記事は microCMS から読み込まれるため、最後に microCMS への投稿内容を案内する。
+本番サイトの記事は microCMS から読み込まれるため、最後に microCMS へ投稿する（できない環境では投稿内容を案内する）。
 
 ## 実行手順
 
@@ -23,9 +23,15 @@
    - `draft: false` に更新
    - 移動後のパスを報告
 
-5. microCMS への投稿内容を案内する（Claude は microCMS に接続できないため、投稿はユーザーが管理画面で行う）：
-   - 記事の値を埋めた表を提示する。フィールド仕様は `.claude/rules/microcms-schema.md` を参照
-   - 対応は次のとおり
+5. microCMS に投稿する：
+   - **ローカル環境（ユーザーの Mac で、`.env` に microCMS の API キーがある場合）**: Claude が投稿してよい
+     - 投稿前に、下の表の値をユーザーに見せて確認を取る
+     - API で投稿する場合は `https://<MICROCMS_SERVICE_DOMAIN>.microcms.io/api/v1/posts` に `X-MICROCMS-API-KEY` ヘッダー付きで送る。`body` は段落ごとに `<p>` で囲んだ HTML にする。`postType` と `category` はセレクトなので配列で送る（例: `["book"]`）
+     - 同じ `slug` の記事がすでにあれば、新規作成せず既存の記事を更新する
+     - API キーが読み取り専用で投稿できない場合は、その旨を伝え、書き込み権限付きキーの追加か、管理画面での入力を案内する
+     - API キーの値は表示・ログ出力・コミットしない
+   - **クラウド環境など、microCMS に接続できない場合**: 下の表を提示し、ユーザーが管理画面で投稿するよう案内する
+   - フィールド仕様は `.claude/rules/microcms-schema.md` を参照。対応は次のとおり
 
    | microCMS | 入れる値 |
    |---|---|
